@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+
+{% block body_page %}
+
+<script type="text/javascript">
+var d=new Date()
+$(document).ready(function(e) {
+    $('#getProjectDisUser').change(function(){
+                $.get("/index/getproinuser/?projectid="+$(this).find(':selected').val()+"&t="+d.getTime(),function(result){
+                        $("#box1").html(result);
+            });
+                
+        })
+});
+</script>
+
+<script type="text/javascript">
+var d=new Date()
+$(document).ready(function(e) {
+    $('#getUserDisProject').change(function(){
+                $.get("/index/getuserinpro/?userid="+$(this).find(':selected').val()+"&t="+d.getTime(),function(result){
+                        $("#box2").html(result);
+            });
+                
+        })
+});
+</script>
+
+<form class="form-horizontal" role="form" method="post" >
+  {% module xsrf_form_html() %}
+  <!-- -->
+    <div class="form-group">
+         <div class="row">
+           <input class="form-control" type="hidden" name="type" id="type" value="gitProjectDisUser" >
+           <label class="col-sm-2 control-label" for="lable1">git项目分配用户</label>
+           <div class="col-sm-2">
+               <select class="form-control" name="gitProjectId" id="getProjectDisUser">
+                   {% raw optionData1 %}
+               </select>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-sm-3" id="box1">
+           </div>
+         </div>
+    </div>
+</form>
+<hr>
+<form class="form-horizontal" role="form" method="post" >
+  {% module xsrf_form_html() %}
+  <!-- -->
+    <div class="form-group">
+         <div class="row">
+           <input class="form-control" type="hidden" name="type" id="type" value="gitUserDisProject" >
+           <label class="col-sm-2 control-label" for="lable">用户分配git项目</label>
+           <div class="col-sm-2">
+               <select class="form-control" name="gitUserId" id="getUserDisProject">
+                   {% raw optionData2 %}
+               </select>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-sm-3" id="box2">
+           </div>
+         </div>
+    </div>
+</form>
+
+{% end %}

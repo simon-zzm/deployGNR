@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block body_page %}
+    <a tyle="font-size:25px;">{{text}}</a>
+    <br>
+    {% try %}
+        {% raw context %}
+    {% except %}
+    {% end %}
+    <br>
+    <p><a href="{{backPage}}" tyle="font-size:23px;">返回上一页</a></p>
+    <br>
+    <p><a href="/index/" tyle="font-size:23px;">返回首页</a></p>
+{% end %}
+

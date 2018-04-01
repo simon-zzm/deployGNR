@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>{{title}}</title>
+    <link href="{{ static_url('bootstrap/3.2.0/css/bootstrap.min.css') }}"  rel="stylesheet"/>
+</head>
+
+<body>
+   <div class="navbar navbar-duomi navbar-static-top" style="text-align:center;overflow: hidden;" role="navigation">
+        <a id="logo" style="font-size: 35px;">git管理部署系统
+        </a>
+    </div>
+    <div class="container-fluid" >
+            <div class="col-md-2 col-md-offset-5">
+                <form  class="form-horizontal" role="form" method="post" action="/">
+                   <div class="form-group">
+                      {% module xsrf_form_html() %}
+                      <div class="form-sm-5">
+                        <input  class="form-control" type="text" name="user" id="user" placeholder="用户名">
+                      </div>
+                   </div>
+                   <div class="form-group">
+                      <div class="form-sn-5">
+                        <input class="form-control" type="password" name="passwd" id="passwd" placeholder="密 码">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-sn-5">
+                         <button type="submit" class="btn btn-default">登 录</button>
+                      </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- end .footer -->
+    </div>
+    <!-- end .container -->
+    <script src="{{ static_url('jquery/2.1.1/jquery.min.js')}}"></script>
+    <script src="{{ static_url('bootstrap/3.2.0/js/bootstrap.min.js')}}"></script>
+</body>
+</html>

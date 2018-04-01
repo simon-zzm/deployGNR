@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+
+{% block body_page %}
+
+<form class="form-horizontal" role="form" enctype="multipart/form-data" method="post" >
+  {% module xsrf_form_html() %}
+  <!-- -->
+    <div class="form-group">
+         <div class="row">
+           <input class="form-control" type="hidden" name="type" id="type" value="gitCreateUser" >
+           <label class="col-sm-2 control-label" for="lable1">增加git用户</label>
+           <div class="col-sm-2">
+               <input class="form-control" type="text" name="gitUserName" id="gitUserName"  placeholder="git用户名">
+           </div>
+           <label class="col-sm-1 control-label" for="lable2">key文件</label>
+           <div class="col-sm-3">
+               <input type="file" id="keyFile" name="keyFile">
+           </div>
+           <button type="submit" class="btn btn-default">提交</button>
+         </div>
+    </div>
+</form>
+<hr>
+<form class="form-horizontal" role="form" enctype="multipart/form-data" method="post" >
+  {% module xsrf_form_html() %}
+  <!-- -->
+    <div class="form-group">
+         <div class="row">
+           <input class="form-control" type="hidden" name="type" id="type" value="gitEditUserKey" >
+           <label class="col-sm-2 control-label" for="lable">用户更换Key</label>
+           <div class="col-sm-2">
+               <input class="form-control" type="text" name="gitUserName" id="gitUserName"  placeholder="git用户名">
+           </div>
+           <label class="col-sm-1 control-label" for="lable">key文件</label>
+           <div class="col-sm-3">
+               <input type="file" id="keyFile" name="keyFile">
+           </div>
+           <button type="submit" class="btn btn-default">提交</button>
+         </div>
+    </div>
+</form>
+
+<hr>
+<form class="form-horizontal" role="form" method="post" >
+  {% module xsrf_form_html() %}
+  <!-- -->
+    <div class="form-group">
+         <div class="row">
+           <input class="form-control" type="hidden" name="type" id="type" value="gitDelUser" >
+           <label class="col-sm-2 control-label" for="lable">禁用git用户</label>
+           <div class="col-sm-2">
+               <input class="form-control" type="text" name="gitUserName" id="gitUserName"  placeholder="git用户名">
+           </div>
+           <button type="submit" class="btn btn-default">提交</button>
+         </div>
+    </div>
+</form>
+<hr>
+
+{% end %}
