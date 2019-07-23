@@ -1,16 +1,13 @@
-python 3.5.2
+﻿CentOS 7 x86_64 
+
+python 3.5.5
 https://www.python.org/ftp/python/
 
+virtualenv 16.3.0
+
 第三方库
-pip3 install tornado == 4.5.3
-pip3 install redis == 2.10.6
-pip3 install Pillow == 5.0.0
-pip3 install werkzeug == 0.14.1
-pip3 install cryptography == 2.1.4
-pip3 install redis == 2.10.6
-pip3 install mysqlclient == 1.3.12
-pip3 install pymysql == 0.8.0
-pip3 install torndb == 0.3
+pip3 install -r requirements.txt
+
 #### torndb不支持python3,源码修改如下
 /usr/local/lib/python3.5/dist-packages/torndb.py
 args = dict(conv=CONVERSIONS, use_unicode=True, charset=charset,
