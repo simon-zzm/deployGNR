@@ -1,4 +1,4 @@
-/*
+﻿/*
 Navicat MySQL Data Transfer
 
 Source Server         : 192.168.1.113-root
@@ -302,4 +302,4 @@ CREATE TABLE `d_user` (
 -- ----------------------------
 -- Records of d_user
 -- ----------------------------
-INSERT INTO `d_user` VALUES ('1', 'admin', 'admin', 'pbkdf2:sha256:50000$pIiOyXsv$e783b04004deb39503db1909b27b53d0078d9e9708ea186b8af8275d7a0546c5', '', '123');
+INSERT INTO `d_user` VALUES ('1', 'admin', 'admin', 'pbkdf2:sha256:150000$ySHb4MxP$27f5f2fecd3bcd0121d95061689eff5036611d36f8aa3f96936d71c2f957bb58', '', '123');

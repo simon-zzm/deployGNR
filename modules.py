@@ -218,46 +218,46 @@ def wlog(fname, context):
 
 
 #### 数据库部分
-import torndb
+import pymysql
 # 读
 rdbInfo = MySqlReadInfo[0]
-rdb = torndb.Connection(
-              host = "%s:%s" % (rdbInfo[0], rdbInfo[1]), \
-              user = rdbInfo[2], password = rdbInfo[3], database = rdbInfo[4], \
-              time_zone = rdbInfo[5], \
-              max_idle_time = 7*3600, \
-              #connect_timeout = 3
-               )
+rdb = pymysql.connect(host = rdbInfo[0], port = rdbInfo[1], \
+                                      db = rdbInfo[4], \
+                                      user = rdbInfo[2], \
+                                      passwd = rdbInfo[3], charset = 'utf8')
 
 # 写
 wdbInfo = MySqlWriteInfo[0]
-wdb = torndb.Connection(
-              host = "%s:%s" % (rdbInfo[0], rdbInfo[1]), \
-              user = rdbInfo[2], password = rdbInfo[3], database = rdbInfo[4], \
-              time_zone = rdbInfo[5], \
-              #max_idle_time = 7*3600, \
-              max_idle_time = 7*3600, \
-              #connect_timeout = 3
-              )
+wdb = pymysql.connect(host = wdbInfo[0], port = wdbInfo[1], \
+                                      db = wdbInfo[4], \
+                                      user = wdbInfo[2], \
+                                      passwd = wdbInfo[3], charset = 'utf8')
 
 
 # 执行sql，并简单判断返回值类型。
 # 如果是插入、更新、删除返回值为执行的id
 def sqlcomm(sql):
-    if sql.split()[0].lower() == "select":
-        data = rdb.query(sql)
+    if sql.split()[0].lower() != "select":
         try:
-            rdb.close()
+            cursor = wdb.cursor()
+            cursor.execute(sql)
+            wdb.commit()
+            data = cursor.fetchall()
+            cursor.close()
+            #wdb.close()
         except:
-            pass
+            wdb.rollback()
     else:
-        data = wdb.execute_rowcount(sql)
         try:
-            wdb.close()
+            cursor = rdb.cursor()
+            cursor.execute(sql)
+            rdb.commit()
+            data = cursor.fetchall()
+            cursor.close()
+            #rdb.close()
         except:
-            pass
+            rdb.rollback()
     return data
-
 
 #### redis
 import redis
@@ -283,7 +283,7 @@ class BaseErrorHandler(tornado.web.RequestHandler):
 #### 生成左侧菜单代码
 from dbmodules import rdbUserInfo, rdbUserColumn
 def creatColumnCode(userName):
-    userId = rdbUserInfo(userName)['id']
+    userId = rdbUserInfo(userName)[0]
     #
     getColumnData = rdbUserColumn(userId)
     columnCode = ''
@@ -293,43 +293,43 @@ def creatColumnCode(userName):
         code1 = '''
                     <li>
                         <a href="#%s%s" class="nav-header collapsed" data-toggle="collapse">
-                ''' % (oneData['id1'], oneData['pid1'])
+                ''' % (oneData[0], oneData[3])
         code2 = '''
                                <span class="pull-right glyphicon glyphicon-chevron-down"></span>
                         </a>
                 '''
         code3 = '''
                         <ul id="%s%s" class="nav nav-list collapse secondmenu" style="height: 0px;">
-                ''' % (oneData['id1'], oneData['pid1'])
+                ''' % (oneData[0], oneData[3])
         if len(columnCode) == 0:
-            colName.append("%s" % oneData['name1'])
+            colName.append("%s" % oneData[4])
             columnCode = "%s" % code1
-            columnCode = '%s%s%s' % (columnCode, oneData['name1'], code2)
+            columnCode = '%s%s%s' % (columnCode, oneData[4], code2)
             try:
-                nameLen = len(oneData['name2'])
+                nameLen = len(oneData[4])
             except:
                 nameLen = 0
             if nameLen > 0:
                 columnCode = '%s%s' % (columnCode, code3)
-                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData['code2'], oneData['name2'])
+                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData[5], oneData[4])
             else:
                 columnCode = '%s\n                      </li>' % (columnCode)
-        elif oneData['name1'] in colName:
-            secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData['code2'], oneData['name2'])
+        elif oneData[4] in colName:
+            secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData[5], oneData[4])
         else:
-            colName.append("%s" % oneData['name1'])
+            colName.append("%s" % oneData[4])
             if len(secColnum) == 0:
-                columnCode = '%s%s   </li>%s%s%s' % (columnCode, secColnum, code1, oneData['name1'], code2)
+                columnCode = '%s%s   </li>%s%s%s' % (columnCode, secColnum, code1, oneData[4], code2)
             else:
-                columnCode = '%s%s   </ul></li>%s%s%s' % (columnCode, secColnum, code1, oneData['name1'], code2)
+                columnCode = '%s%s   </ul></li>%s%s%s' % (columnCode, secColnum, code1, oneData[4], code2)
             secColnum = ''
             try:
-                nameLen = len(oneData['name2'])
+                nameLen = len(oneData[4])
             except:
                 nameLen = 0
             if nameLen > 0:
                 columnCode = '%s%s' % (columnCode, code3)
-                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData['code2'], oneData['name2'])
+                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData[5], oneData[4])
     if len(secColnum) == 0:
         columnCode = '%s   </li>' % (columnCode)
     else:

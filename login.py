@@ -39,7 +39,7 @@ class LoginHandler(tornado.web.RequestHandler):
             userName = self.get_argument("user")
             passwd = self.get_argument("passwd")
             userInfo = rdbUserInfo(userName)
-            passstr = userInfo['passwd']
+            passstr = userInfo[3]
             if passwd is not None:
                 if checkPasswd(passwd, passstr):
                     if getClentIp(self)[0] == "Null":
