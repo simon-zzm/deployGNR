@@ -249,7 +249,7 @@ def sqlcomm(sql):
             wdb.rollback()
     else:
         try:
-            cursor = rdb.cursor()
+            cursor = rdb.cursor(cursor=pymysql.cursors.DictCursor)
             cursor.execute(sql)
             rdb.commit()
             data = cursor.fetchall()
