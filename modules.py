@@ -283,7 +283,7 @@ class BaseErrorHandler(tornado.web.RequestHandler):
 #### 生成左侧菜单代码
 from dbmodules import rdbUserInfo, rdbUserColumn
 def creatColumnCode(userName):
-    userId = rdbUserInfo(userName)[0]
+    userId = rdbUserInfo(userName)['id']
     #
     getColumnData = rdbUserColumn(userId)
     columnCode = ''
@@ -293,47 +293,45 @@ def creatColumnCode(userName):
         code1 = '''
                     <li>
                         <a href="#%s%s" class="nav-header collapsed" data-toggle="collapse">
-                ''' % (oneData[0], oneData[3])
+                ''' % (oneData['id1'], oneData['pid1'])
         code2 = '''
                                <span class="pull-right glyphicon glyphicon-chevron-down"></span>
                         </a>
                 '''
         code3 = '''
                         <ul id="%s%s" class="nav nav-list collapse secondmenu" style="height: 0px;">
-                ''' % (oneData[0], oneData[3])
+                ''' % (oneData['id1'], oneData['pid1'])
         if len(columnCode) == 0:
-            colName.append("%s" % oneData[4])
+            colName.append("%s" % oneData['name1'])
             columnCode = "%s" % code1
-            columnCode = '%s%s%s' % (columnCode, oneData[4], code2)
+            columnCode = '%s%s%s' % (columnCode, oneData['name1'], code2)
             try:
-                nameLen = len(oneData[4])
+                nameLen = len(oneData['name2'])
             except:
                 nameLen = 0
             if nameLen > 0:
                 columnCode = '%s%s' % (columnCode, code3)
-                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData[5], oneData[4])
+                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData['code2'], oneData['name2'])
             else:
                 columnCode = '%s\n                      </li>' % (columnCode)
-        elif oneData[4] in colName:
-            secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData[5], oneData[4])
+        elif oneData['name1'] in colName:
+            secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData['code2'], oneData['name2'])
         else:
-            colName.append("%s" % oneData[4])
+            colName.append("%s" % oneData['name1'])
             if len(secColnum) == 0:
-                columnCode = '%s%s   </li>%s%s%s' % (columnCode, secColnum, code1, oneData[4], code2)
+                columnCode = '%s%s   </li>%s%s%s' % (columnCode, secColnum, code1, oneData['name1'], code2)
             else:
-                columnCode = '%s%s   </ul></li>%s%s%s' % (columnCode, secColnum, code1, oneData[4], code2)
+                columnCode = '%s%s   </ul></li>%s%s%s' % (columnCode, secColnum, code1, oneData['name1'], code2)
             secColnum = ''
             try:
-                nameLen = len(oneData[4])
+                nameLen = len(oneData['name2'])
             except:
                 nameLen = 0
             if nameLen > 0:
                 columnCode = '%s%s' % (columnCode, code3)
-                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData[5], oneData[4])
+                secColnum = '%s<li><a href="%s/index/%s/">%s</a></li>' % (secColnum, domainName, oneData['code2'], oneData['name2'])
     if len(secColnum) == 0:
         columnCode = '%s   </li>' % (columnCode)
     else:
         columnCode = '%s%s   </ul></li>' % (columnCode, secColnum)
     return columnCode
-
-
