@@ -55,9 +55,9 @@ class userManHandler(tornado.web.RequestHandler):
             changPasswd = createPasswd()
             changPasswdCount = wdbChangUserPass(getUserName, toPasswd(changPasswd))
             context = ""
-            if changPasswdCount == 0:
+            if int(changPasswdCount) == 0:
                 context = "重置失败"
-            elif changPasswdCount > 0:
+            elif int(changPasswdCount) > 0:
                 context = "用户:%s,密码修改为:%s" % (getUserName, changPasswd)
             self.render("global.html",  baseInfo = self.baseInfo, \
                                         text=context, \
@@ -84,7 +84,7 @@ class userManHandler(tornado.web.RequestHandler):
             context = ""
             if int(insertUserCount) == 0:
                 context = "创建用户失败"
-            elif insertUserCount > 0:
+            elif int(insertUserCount) > 0:
                 context = "用户:%s,密码修改为:%s" % (addUser, changPasswd)
             self.render("global.html",  baseInfo = self.baseInfo, \
                                         text=context, \

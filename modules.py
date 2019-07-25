@@ -239,10 +239,8 @@ wdb = pymysql.connect(host = wdbInfo[0], port = wdbInfo[1], \
 def sqlcomm(sql):
     if sql.split()[0].lower() != "select":
         try:
-            cursor = wdb.cursor()
-            cursor.execute(sql)
-            wdb.commit()
-            data = cursor.fetchall()
+            cursor = wdb.cursor(cursor=pymysql.cursors.DictCursor)
+            data = cursor.execute(sql)
             cursor.close()
             #wdb.close()
         except:
