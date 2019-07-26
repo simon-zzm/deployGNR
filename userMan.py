@@ -26,8 +26,13 @@ class userManHandler(tornado.web.RequestHandler):
         optionData = '<option value="u">选择用户</option>\n'
         for one in rdbAllUserName():
             optionData = '%s<option value="%s">%s</option>\n' % (optionData, one['name'], one['name'])
+        # 获取未禁用用户信息
+        useOptionData = '<option value="u">选择用户</option>\n'
+        for two in rdbUserName():
+            useOptionData = '%s<option value="%s">%s</option>\n' % (useOptionData, two['name'], two['name'])
         self.render("userMan.html",  baseInfo = self.baseInfo, \
-                                     optionData = optionData)
+                                     optionData = optionData, \
+                                     useOptionData = useOptionData)
 
 
     @htmlBaseInfo
@@ -90,7 +95,7 @@ class userManHandler(tornado.web.RequestHandler):
                                         text=context, \
                                         backPage= '/index/userMan/')
             return 
-        # 删除用户
+        # 禁用用户
         if typeCon == "deluser":
             # 查看用户名是否存在
             checkUserNameHave = rdbUserNameHave(getUserName)[0]['c']
@@ -103,7 +108,7 @@ class userManHandler(tornado.web.RequestHandler):
             #
             delUserCount = wdbDelUser(getUserName)
             delUserAuthCount = wdbDelUserAuth(getUserName)
-            context = "用户:%s,已经停用。清理该用户租信息%s条。" % (getUserName, delUserAuthCount)
+            context = "用户:%s,已经停用。清理该用户组信息%s条。" % (getUserName, delUserAuthCount)
             self.render("global.html",  baseInfo = self.baseInfo, \
                                         text=context, \
                                         backPage= '/index/userMan/')

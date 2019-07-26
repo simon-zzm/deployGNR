@@ -69,6 +69,15 @@ def rdbAllUserName():
         data = {}
     return data
 
+#### 系统管理->用户管理 userMan.py
+def rdbUserName():
+    try:
+        sql = "select name from d_user where passwd != ''"
+        data = sqlcomm(sql)
+    except:
+        data = {}
+    return data
+
 #### 系统管理->用户管理 userMan.py 
 def wdbChangUserPass(getUserName, getPasswd):
     try:
