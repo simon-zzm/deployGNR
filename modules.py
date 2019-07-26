@@ -220,18 +220,22 @@ def wlog(fname, context):
 #### 数据库部分
 import pymysql
 # 读
-rdbInfo = MySqlReadInfo[0]
-rdb = pymysql.connect(host = rdbInfo[0], port = rdbInfo[1], \
+def rDB():
+    rdbInfo = MySqlReadInfo[0]
+    rdb = pymysql.connect(host = rdbInfo[0], port = rdbInfo[1], \
                                       db = rdbInfo[4], \
                                       user = rdbInfo[2], \
                                       passwd = rdbInfo[3], charset = 'utf8')
+    return rdb
 
 # 写
-wdbInfo = MySqlWriteInfo[0]
-wdb = pymysql.connect(host = wdbInfo[0], port = wdbInfo[1], \
+def wDB():
+    wdbInfo = MySqlWriteInfo[0]
+    wdb = pymysql.connect(host = wdbInfo[0], port = wdbInfo[1], \
                                       db = wdbInfo[4], \
                                       user = wdbInfo[2], \
                                       passwd = wdbInfo[3], charset = 'utf8')
+    return wdb
 
 
 # 执行sql，并简单判断返回值类型。
@@ -239,20 +243,22 @@ wdb = pymysql.connect(host = wdbInfo[0], port = wdbInfo[1], \
 def sqlcomm(sql):
     if sql.split()[0].lower() != "select":
         try:
+            wdb = wDB()
             cursor = wdb.cursor(cursor=pymysql.cursors.DictCursor)
             data = cursor.execute(sql)
+            wdb.commit()
             cursor.close()
-            #wdb.close()
+            wdb.close()
         except:
             wdb.rollback()
     else:
         try:
+            rdb = rDB()
             cursor = rdb.cursor(cursor=pymysql.cursors.DictCursor)
             cursor.execute(sql)
-            rdb.commit()
             data = cursor.fetchall()
             cursor.close()
-            #rdb.close()
+            rdb.close()
         except:
             rdb.rollback()
     return data

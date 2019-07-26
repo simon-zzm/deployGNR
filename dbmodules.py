@@ -94,6 +94,7 @@ def wdbInsertUser(getUserName, getPasswd):
     try:
         sql = "INSERT INTO d_user(name, nick_name, passwd) VALUE('%s', '%s', '%s')" % \
                   (getUserName, getUserName, getPasswd)
+        print(sql)
         data = sqlcomm(sql)
     except:
         data = 0
