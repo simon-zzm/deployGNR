@@ -103,7 +103,6 @@ def wdbInsertUser(getUserName, getPasswd):
     try:
         sql = "INSERT INTO d_user(name, nick_name, passwd) VALUE('%s', '%s', '%s')" % \
                   (getUserName, getUserName, getPasswd)
-        print(sql)
         data = sqlcomm(sql)
     except:
         data = 0
@@ -304,6 +303,20 @@ def wdbGitProjectUrlChange(gitId, gitUrl):
     try:
         sql = "UPDATE d_git_project set gitUrl='%s' where id='%s'" \
                 % (gitUrl, gitId)
+        data = sqlcomm(sql)
+    except:
+        data = 0
+    return data
+
+#### git管理->git项目管理 gitProjectMan.py
+def wdbGitProjectDel(gitId):
+    try:
+        sql = "delete from d_git_project where id='%s'" % (gitId)
+        data = sqlcomm(sql)
+    except:
+        data = 0
+    try:
+        sql = "delete from d_git_project_user where gitProjectId='%s'" % (gitId)
         data = sqlcomm(sql)
     except:
         data = 0

@@ -7,9 +7,9 @@
 import os
 
 # 监听部分
-listenIp = '192.168.1.100'
+listenIp = '182.92.186.219'
 listenPort = 9988
-domainName = 'http://192.168.1.100:9988'
+domainName = 'http://182.92.186.219:9988'
 title = 'deployGNR'
 
 # 当前路径
@@ -23,13 +23,13 @@ imgRootPath = "/program/img/"
 debugMode = True
 
 # cookie 安全 key
-cookieKey = ''
+cookieKey = 'if38u2g4i898#439#yg439h8g9438hy4g93'
 # cookie 超时(天)
 cookieTimeoutDays = 3
 # session超时时间，写入redis中，单位为秒
 sessionTimeout = 60*60*24*3
 # passkey 本地存储密码加解密使用
-passKey = b''
+passKey = b'H7pFRBEdYmIwy6g3vlDq8VZzidfWpYpdyxzk0x9_wNc='
 
 # 系统全局设置
 settings = {
@@ -50,12 +50,12 @@ keyFile = ''
 # mysql
 # 单个数据库信息格式为：IP 端口 账号 密码 库名 时区 模式(默认为严格模式)
 # 多个库以列表形势配置
-MySqlWriteInfo = [['127.0.0.1', 3306, 'deployGNR', 'deployGNR', 'deployGNR', '+8:00'],]
-MySqlReadInfo = [['127.0.0.1', 3306, 'deployGNR', 'deployGNR', 'deployGNR', '+8:00'],]
+MySqlWriteInfo = [['127.0.0.1', 3306, 'deployGNR', 'deploy8675', 'deployGNR', '+8:00'],]
+MySqlReadInfo = [['127.0.0.1', 3306, 'deployGNR', 'deploy8675', 'deployGNR', '+8:00'],]
 poolsDEBUG = True
 
 # redis 数据超时时间为7天。socket超时单位秒
-redisIp = "127.0.0.1"
+redisIp = "10.171.53.171"
 redisPort = "6379"
 redisDB = 3
 redisSocketTimeout = 3.0
@@ -94,8 +94,8 @@ sqlInjData = ["'", 'and', 'or', 'exec', 'insert',
               'select', 'delete', 'update', 'count', 
               'chr', 'mid', 'master', 'truncate', 'char', 
               'declare', '=', '{', '}', '[', ']', '\\', 
-              ';', '<', '>', '?', ',', '.', '`', '~', 
-              '!', '@', '$', '*', '%', '^', '(', ')', 
+              ';', '<', '>', '?', ',', '`', '~', 
+              '!', '$', '*', '%', '^', '(', ')', 
               '|', 'script']
 
 # git服务器配置

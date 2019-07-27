@@ -99,3 +99,23 @@ class gitProjectManHandler(tornado.web.RequestHandler):
             self.render("global.html",  baseInfo = self.baseInfo, \
                                         text=context, \
                                         backPage= '/index/gitProjectMan/')
+        # 删除git项目
+        if typeCon == "gitDelProject":
+            try:
+                gitProjectId = self.get_argument('gitProjectId')
+            except:
+                self.render("error.html", baseInfo = self.baseInfo, \
+                                   err = {'text':'业务异常。'})
+                return
+            # 判断输入是否为空
+            if len(gitProjectId) == 0:
+                context = "项目不存在"
+                self.render("global.html",  baseInfo = self.baseInfo, \
+                                        text=context, \
+                                        backPage= '/index/gitProjectMan/')
+            # git项目url入库
+            gitProjectCount = wdbGitProjectDel(gitProjectId)
+            context = "git项目入库%s条" % gitProjectCount
+            self.render("global.html",  baseInfo = self.baseInfo, \
+                                        text=context, \
+                                        backPage= '/index/gitProjectMan/') 
