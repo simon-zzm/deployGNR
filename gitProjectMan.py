@@ -16,12 +16,8 @@ class gitProjectManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(105)
     def get(self):
-        # 检查权限105
-        if checkAuth(self.baseInfo['getUserName'], 105) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
         # 获取所有项目名
         optionData = '<option value="u">项目名</option>\n'
         allGitPro = rdbAllGitProject()
@@ -34,13 +30,8 @@ class gitProjectManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(106)
     def post(self):
-        # 检查权限106
-        if checkAuth(self.baseInfo['getUserName'], 106) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
-        # 
         try:
             typeCon = self.get_argument('type')
         except:

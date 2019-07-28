@@ -16,12 +16,8 @@ class userManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(101)
     def get(self):
-        # 检查权限101
-        if checkAuth(self.baseInfo['getUserName'], 101) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
         # 获取所有用户信息
         optionData = '<option value="u">选择用户</option>\n'
         for one in rdbAllUserName():
@@ -38,13 +34,8 @@ class userManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(102)
     def post(self):
-        # 检查权限102
-        if checkAuth(self.baseInfo['getUserName'], 102) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
-        # 
         try:
             typeCon = self.get_argument('type')
         except:

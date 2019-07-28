@@ -16,25 +16,16 @@ class gitUserManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(107)
     def get(self):
-        # 检查权限107
-        if checkAuth(self.baseInfo['getUserName'], 107) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
         self.render("gitUserMan.html",  baseInfo = self.baseInfo)
 
 
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(108)
     def post(self):
-        # 检查权限108
-        if checkAuth(self.baseInfo['getUserName'], 108) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
-        # 
         try:
             typeCon = self.get_argument('type')
         except:

@@ -6,6 +6,7 @@
 ### END INIT INFO
 import tornado.ioloop
 import tornado.web
+from functools import wraps
 
 import os
 import sys
@@ -133,12 +134,33 @@ def sqlInj(self):
         response = '{"code":"920"}'
     return response
 
-# 查看提交权限
+# 查看提交权限函数
 def checkAuth(userName, submitId):
     userId = rdbUserInfo(userName)['id']
     return int(sqlcomm('select count(id) as c from d_group_submit as xgs where group_id in ( \
                   select group_id from d_group_user where user_id=%s \
                  ) and xgs.submit_id =%s' % (userId, submitId))[0]['c'])
+
+# 查看提交权限装饰器
+def checkSubmitAuth(submitId):
+    """
+    检查按钮操作权限
+    """
+    def check(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            userName = self.baseInfo['getUserName']
+            userId = rdbUserInfo(userName)['id']
+            countUserSubmit = sqlcomm('select count(id) as c from d_group_submit as xgs where group_id in ( \
+                  select group_id from d_group_user where user_id=%s \
+                 ) and xgs.submit_id =%s' % (userId, submitId))[0]['c']
+            if int(countUserSubmit) == 0:
+                self.render("error.html", baseInfo = self.baseInfo, \
+                                   err = {'text':'权限异常。'})
+                return
+            return func(self, *args, **kwargs)
+        return wrapper 
+    return check
 
 # 将MySQL的数据转为json
 def mysqltojson(getList):

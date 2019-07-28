@@ -31,12 +31,8 @@ class deployConfigHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(113)
     def post(self):
-        # 检查权限113
-        if checkAuth(self.baseInfo['getUserName'], 113) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
         # 获取提交类型
         try:
             typeCon = self.get_argument('type')

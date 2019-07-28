@@ -16,12 +16,8 @@ class groupManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(103)
     def get(self):
-        # 检查权限103
-        if checkAuth(self.baseInfo['getUserName'], 103) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
         # 获取所有用户信息
         optionData = '<option value="u">选择组</option>\n'
         allGroup = rdbAllGroup()
@@ -34,13 +30,8 @@ class groupManHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
     @checkUrl
+    @checkSubmitAuth(104)
     def post(self):
-        # 检查权限104
-        if checkAuth(self.baseInfo['getUserName'], 104) < 1:
-            self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-            return
-        # 
         try:
             typeCon = self.get_argument('type')
         except:
