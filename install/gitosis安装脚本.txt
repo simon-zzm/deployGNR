@@ -1,8 +1,8 @@
-# root用户执行命令
+# root鐢ㄦ埛鎵ц鍛戒护
 cd /home
 groupadd -g 9990 git 
 useradd -u 9990 -g 9990 -m -d /home/git -r git
-#直接用root可以不增加git密码
+#鐩存帴鐢╮oot鍙互涓嶅鍔爂it瀵嗙爜
 #passwd git
 yum install -y git openssh-server openssh-client gitosis git-core
 git clone https://github.com/res0nat0r/gitosis
@@ -10,7 +10,7 @@ cd gitosis
 python setup.py install
 cd ..
 
-git用户执行命令
+git鐢ㄦ埛鎵ц鍛戒护
 su - git
 ssh-keygen -t rsa -b 2048
 touch /home/git/.ssh/authorized_keys
@@ -22,13 +22,13 @@ mkdir  -p  mkdir /home/git/repositories
 chmod 755 /home/git/repositories
 gitosis-init < .ssh/id_rsa.pub
 
-# 编辑配置文件上传
+# 缂栬緫閰嶇疆鏂囦欢涓婁紶
 git clone git@localhost:/gitosis-admin.git 
 cd gitosis-admin/
-# 编辑项目
+# 缂栬緫椤圭洰
 #vim gitosis.conf 
 cd keydir/
-# 增加用户
+# 澧炲姞鐢ㄦ埛
 #vim simon.pub
 cd ..
 git add .
@@ -38,7 +38,7 @@ git commit -am "add user simon"
 git push
 cd ..
 
-#初始化库
+#鍒濆鍖栧簱
 cd gitroot/
 mkdir test
 cd test
@@ -47,4 +47,4 @@ touch readme.txt
 git add .
 git commit -am "test"
 git remote add origin git@localhost:test
-gi
+git push
