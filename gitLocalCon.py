@@ -38,11 +38,7 @@ class gitLocalConHandler(tornado.web.RequestHandler):
             return
         # 增加组
         if typeCon == "createGitConf":
-            # 检查权限111
-            if checkAuth(self.baseInfo['getUserName'], 111) < 1:
-                self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-                return
+            checkSubmitAuth(111)
             try:
                 createStatus = ""
                 createStatus = createGitConf()
@@ -60,11 +56,7 @@ class gitLocalConHandler(tornado.web.RequestHandler):
             return
         # 本地创建新库
         if typeCon == "createLocalGitProject":
-            # 检查权限112
-            if checkAuth(self.baseInfo['getUserName'], 112) < 1:
-                self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'权限异常。'})
-                return
+            checkSubmitAuth(112)
             # git项目id
             try:
                 gitProjectId = self.get_argument('gitProject')
