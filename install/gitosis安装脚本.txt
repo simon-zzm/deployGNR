@@ -47,4 +47,4 @@ touch readme.txt
 git add .
 git commit -am "test"
 git remote add origin git@localhost:test
-git push
+git push --set-upstream origin master
