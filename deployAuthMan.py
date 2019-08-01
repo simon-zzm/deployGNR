@@ -44,10 +44,7 @@ class deployAuthManHandler(tornado.web.RequestHandler):
         # 根据项目修改用户
         if typeCon == "gitProjectDisUser":
             # 检查权限109
-            if checkAuth(self.baseInfo['getUserName'], 109) < 1:
-                self.render("error.html", baseInfo = self.baseInfo, \
-                                       err = {'text':'权限异常。'})
-                return
+            checkSubmitAuth(109)
             # 获取项目id
             try:
                 gitProjectId = self.get_argument('gitProjectId')
@@ -73,10 +70,7 @@ class deployAuthManHandler(tornado.web.RequestHandler):
         # 根据用户修改项目
         if typeCon == "gitUserDisProject":
             # 检查权限110
-            if checkAuth(self.baseInfo['getUserName'], 110) < 1:
-                self.render("error.html", baseInfo = self.baseInfo, \
-                                       err = {'text':'权限异常。'})
-                return
+            checkSubmitAuth(110)
             # 项目id
             try:
                 gitUserId = self.get_argument('gitUserId')

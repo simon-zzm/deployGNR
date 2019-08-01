@@ -134,14 +134,8 @@ def sqlInj(self):
         response = '{"code":"920"}'
     return response
 
-# 查看提交权限函数
-def checkAuth(userName, submitId):
-    userId = rdbUserInfo(userName)['id']
-    return int(sqlcomm('select count(id) as c from d_group_submit as xgs where group_id in ( \
-                  select group_id from d_group_user where user_id=%s \
-                 ) and xgs.submit_id =%s' % (userId, submitId))[0]['c'])
 
-# 查看提交权限装饰器
+# 查看权限装饰器
 def checkSubmitAuth(submitId):
     """
     检查按钮操作权限
@@ -283,6 +277,7 @@ def sqlcomm(sql):
             rdb.close()
         except:
             rdb.rollback()
+            rdb.close()
     return data
 
 #### redis
