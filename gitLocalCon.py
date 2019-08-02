@@ -36,16 +36,17 @@ class gitLocalConHandler(tornado.web.RequestHandler):
             self.render("error.html", baseInfo = self.baseInfo, \
                                    err = {'text':'业务异常。'})
             return
+        print(typeCon)
         # 增加组
         if typeCon == "createGitConf":
-            checkSubmitAuth(111)
-            try:
-                createStatus = ""
-                createStatus = createGitConf()
-            except:
-                self.render("error.html", baseInfo = self.baseInfo, \
-                                   err = {'text':'创建失败'})
-                return
+            #checkSubmitAuth(111)
+            #try:
+            createStatus = ""
+            createStatus = createGitConf()
+            #except:
+            #    self.render("error.html", baseInfo = self.baseInfo, \
+            #                       err = {'text':'创建失败'})
+            #    return
             if len(createStatus) == 0:
                 context = "配置创建异常"
             else:
@@ -87,11 +88,13 @@ class gitLocalConHandler(tornado.web.RequestHandler):
 
 def createGitConf():
     status = ""
+    print("go AAA")
     try:
         confFile = open('gitosis.tmp', 'w')
     except:
-        status = "创建本地文件失败。"
+        status = "创建本地文件失败。\n"
         return status
+    print("go BBB")
     # 开始创建配置头
     confFile.write("[gitosis]\n")
     confFile.write("")
@@ -112,50 +115,59 @@ def createGitConf():
     # 写入完成
     confFile.close()
     status = "本地创建配置完成。"
+    print("go CCC")
     # 移动到git配置并赋值
     import os
     from shutil import copy2,move
     # 备份
     try:
-        copy2('%sgitosis.conf' % gitRootPath, '%sgitosis.%s' % (gitRootPath, getNowUnixTimeInt()))
+        backFile = '%sgitosis.%s' % (gitRootPath, getNowUnixTimeInt())
+        copy2('%sgitosis.conf' % gitRootPath, backFile)
+        os.chown(backFile, int(gitSYSAuth.split('.')[0]), int(gitSYSAuth.split('.')[1]))
         status = "%s。备份完成。" % status
     except:
         status = "%s。备份原始文件失败。" % status
-        pass
+        return status
     # 复制
     try:
         move('gitosis.tmp', '%sgitosis.conf' % gitRootPath)
         status = "%s。复制配置完成。" % status
     except:
         status = "%s。复制失败。" % status
+        return status
     # 变更权限
     try:
-        os.chown('%sgitosis.conf' % gitRootPath, int(gitSYSAuth.split('.')[0]), int(gitSYSAuth.split('.')[1]))
+        os.chown('%s/gitosis.conf' % gitRootPath, int(gitSYSAuth.split('.')[0]), int(gitSYSAuth.split('.')[1]))
         status = "%s。权限变更完成。" % status
     except:
         status = "%s。权限变更失败。" % status
+        return status
     # 提交到服务器
     try:
+        
         os.chdir(gitRootPath)
-        os.system('git add .')
+        os.system('git add --all .')
         os.system("git commit -am 'conf change at %s'" % getNowUnixTimeInt())
+        print(">>>>>>")
         os.system('git push origin master')
         status = "%s。git提交完成。" % status
     except:
         status = "%s。git提交失败。" % status
+        return status
     return status
 
 
 
 def createLocalGit(gitProjectName):
     import os
-    status = "开始初始化git库"
+    status = "开始初始化git库。"
     # 进入主目录
     try:
         os.chdir(gitLocalPath)
         status = "%s进入初始化目录完成。" % status
     except:
         status = "%s进入初始化目录失败。" % status
+        return status
     # 初始化项目目录
     try:
         os.mkdir(gitProjectName)
@@ -163,6 +175,7 @@ def createLocalGit(gitProjectName):
         status = "%s创建项目目录完成。" % status
     except:
         status = "%s创建项目目录失败。" % status
+        return status
     # 项目初始化
     try:
         os.system("git init")
@@ -171,12 +184,22 @@ def createLocalGit(gitProjectName):
         status = "%s本地初始化完成。" % status
     except:
         status = "%s本地初始化失败。" % status
+        return status
     # 项目提交
     try:
         os.system("git commit -am 'create project %s'" % gitProjectName)
-        os.system("git remote add origin %s:%s" % (gitManName, gitProjectName))
-        os.system("git push origin master ")
+        status = "%s本地提交成功。" % status
+    except:
+        status = "%s本地提交失败。" % status
+        return status
+    # 远程提交 
+    try:
+        tmpData = os.popen("git remote add origin %s:%s" % (gitManName, gitProjectName)).read()
+        print(tmpData)
+        
+        os.system("git push --set-upstream origin master ")
         status = "%s项目提交完成。" % status
     except:
         status = "%s项目提交失败。" % status
+        return status
     return status

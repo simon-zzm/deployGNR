@@ -13,6 +13,7 @@ pip3 install -r requirements.txt
 redis 4.0.2
 https://redis.io/download
 
+代码部署在git用户下。
 
 主要文件说明
 config.py                全局配置文件。

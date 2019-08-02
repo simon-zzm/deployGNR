@@ -103,8 +103,8 @@ gitRootPath = "/home/git/gitosis-admin/"
 # git存放位置
 gitKeyPath = gitRootPath+'keydir/'
 # git管理用户
-gitManName = "git@git.com"
+gitManName = "git@iZ25jrz67c4Z"
 # 系统管理账号ID和组ID
-gitSYSAuth = "800.800"
+gitSYSAuth = "9990.9990"
 # git库存放位置
 gitLocalPath = "/home/git/gitroot/"
