@@ -36,17 +36,16 @@ class gitLocalConHandler(tornado.web.RequestHandler):
             self.render("error.html", baseInfo = self.baseInfo, \
                                    err = {'text':'业务异常。'})
             return
-        print(typeCon)
         # 增加组
         if typeCon == "createGitConf":
-            #checkSubmitAuth(111)
-            #try:
-            createStatus = ""
-            createStatus = createGitConf()
-            #except:
-            #    self.render("error.html", baseInfo = self.baseInfo, \
-            #                       err = {'text':'创建失败'})
-            #    return
+            checkSubmitAuth(111)
+            try:
+                createStatus = ""
+                createStatus = createGitConf()
+            except:
+                self.render("error.html", baseInfo = self.baseInfo, \
+                                   err = {'text':'创建失败'})
+                return
             if len(createStatus) == 0:
                 context = "配置创建异常"
             else:
@@ -88,13 +87,11 @@ class gitLocalConHandler(tornado.web.RequestHandler):
 
 def createGitConf():
     status = ""
-    print("go AAA")
     try:
         confFile = open('gitosis.tmp', 'w')
     except:
         status = "创建本地文件失败。\n"
         return status
-    print("go BBB")
     # 开始创建配置头
     confFile.write("[gitosis]\n")
     confFile.write("")
@@ -115,7 +112,6 @@ def createGitConf():
     # 写入完成
     confFile.close()
     status = "本地创建配置完成。"
-    print("go CCC")
     # 移动到git配置并赋值
     import os
     from shutil import copy2,move
@@ -148,7 +144,6 @@ def createGitConf():
         os.chdir(gitRootPath)
         os.system('git add --all .')
         os.system("git commit -am 'conf change at %s'" % getNowUnixTimeInt())
-        print(">>>>>>")
         os.system('git push origin master')
         status = "%s。git提交完成。" % status
     except:
@@ -168,10 +163,15 @@ def createLocalGit(gitProjectName):
     except:
         status = "%s进入初始化目录失败。" % status
         return status
-    # 初始化项目目录
+    # 初始化目目录
     try:
+        try:
+            import shutil  
+            shutil.rmtree(gitProjectName)
+        except:
+            pass
         os.mkdir(gitProjectName)
-        os.chdir("%s%s" % (gitLocalPath, getiProjectName))
+        os.chdir("%s%s" % (gitLocalPath, gitProjectName))
         status = "%s创建项目目录完成。" % status
     except:
         status = "%s创建项目目录失败。" % status
@@ -192,12 +192,29 @@ def createLocalGit(gitProjectName):
     except:
         status = "%s本地提交失败。" % status
         return status
-    # 远程提交 
+    # 添加远程提交 
     try:
-        tmpData = os.popen("git remote add origin %s:%s" % (gitManName, gitProjectName)).read()
-        print(tmpData)
-        
-        os.system("git push --set-upstream origin master ")
+        import pexpect
+        child = pexpect.spawn("""git remote add origin %s:%s""" % (gitManName, gitProjectName))
+        if len(child.readlines()) == 0:
+            pass
+        else: 
+            ret = child.expect(['fatal: remote origin already exists','connecting (yes/no)', pexpect.EOF])
+            if ret == 0:
+                status = "%s库中已存在该项目。" % status
+                return status
+            if ret == 1:
+                child.sendline('yes')
+            if ret == 2:
+                status += "异常%s" % child.readlines()[0] 
+                return status
+        status = "%s远程添加成功。" % status
+    except:
+        status = "%s远程添加失败。" % status
+        return status
+    # 远程提交
+    try:
+        os.popen("git push --set-upstream origin master ")
         status = "%s项目提交完成。" % status
     except:
         status = "%s项目提交失败。" % status
