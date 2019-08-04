@@ -13,6 +13,10 @@ pip3 install -r requirements.txt
 redis 4.0.2
 https://redis.io/download
 
+rsync
+git clone git://git.samba.org/rsync.git
+# 使用root用户安装。./configure & make & make install
+
 代码部署在git用户下。
 
 主要文件说明
