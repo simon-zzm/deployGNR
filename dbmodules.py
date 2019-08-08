@@ -463,3 +463,12 @@ def rdbDeployProjectInfo(deployProId):
         data = {}
     return data
 
+#### 部署管理->部署配置 deployConfig.py
+def wdbAddDeployProjectInfo(deployProName, ipPort, user, passwd, gitSrc, gitConf, exc):
+    try:
+        sql = "insert into d_deploy_project(deployName,deployRsyncIP,deployRsyncUser,deployRsyncPasswd,deployRsyncExclude,deployGitSrcUrl,deployGitConfUrl) \
+                    values('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (deployProName, ipPort, user, passwd, exc, gitSrc, gitConf)
+        data = sqlcomm(sql)
+    except:
+        data = {}
+    return data

@@ -93,10 +93,10 @@ secondRate = 0
 sqlInjData = ["'", 'and', 'or', 'exec', 'insert', 
               'select', 'delete', 'update', 'count', 
               'chr', 'mid', 'master', 'truncate', 'char', 
-              'declare', '=', '{', '}', '[', ']', '\\', 
+              'declare', '=', '{', '}', '\\', 
               ';', '<', '>', '?', ',', '`', '~', 
               '!', '$', '*', '%', '^', '(', ')', 
-              '|', 'script']
+              'script']
 
 # git服务器配置
 gitRootPath = "/home/git/gitosis-admin/"

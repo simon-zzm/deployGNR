@@ -81,12 +81,12 @@ CREATE TABLE `d_deploy_project` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
   `deployName` varchar(100) DEFAULT NULL COMMENT '要部署的项目名',
   `deployRsyncScheme` int(1) DEFAULT '0' COMMENT '同步方案：0为rsync 工具，1为ansible',
-  `deployRsyncIP` varchar(1000) DEFAULT NULL COMMENT '同步工具IP列表。格式为[ip2:port,ip1:port]',
+  `deployRsyncIP` varchar(2000) DEFAULT NULL COMMENT '同步工具IP列表。格式为[ip2:port,ip1:port]',
   `deployRsyncUser` varchar(30) DEFAULT NULL COMMENT '同步用户名',
   `deployRsyncProjectName` varchar(100) DEFAULT NULL COMMENT '同步项目名',
   `deployRsyncPasswd` varchar(100) DEFAULT NULL COMMENT '同步密码',
   `deployRsyncKey` varchar(150) DEFAULT NULL COMMENT '同步key，存储位置和名称',
-  `deployRsyncExclude` varchar(100) DEFAULT NULL COMMENT '同步中排除的文件或目录。格式：123.txt|123/|.git',
+  `deployRsyncExclude` varchar(500) DEFAULT NULL COMMENT '同步中排除的文件或目录。格式：123.txt|123/|.git',
   `deployGitSrcUrl` varchar(300) DEFAULT NULL,
   `deployGitConfUrl` varchar(300) DEFAULT NULL,
   `deployRsyncForntComm` varchar(100) DEFAULT NULL COMMENT '同步代码前本地执行的脚本（bashshell）。存储为unixtime+6位数字随机序号文件。',
@@ -234,6 +234,7 @@ INSERT INTO `d_group_submit` VALUES ('18', '1', '111');
 INSERT INTO `d_group_submit` VALUES ('19', '1', '112');
 INSERT INTO `d_group_submit` VALUES ('20', '1', '113');
 INSERT INTO `d_group_submit` VALUES ('23', '1', '114');
+INSERT INTO `d_group_submit` VALUES ('24', '1', '115');
 
 -- ----------------------------
 -- Table structure for `d_group_user`
@@ -283,6 +284,7 @@ INSERT INTO `d_submit` VALUES ('12', '111', 'git本地配置生成', 'git管理-
 INSERT INTO `d_submit` VALUES ('13', '112', 'git本地库创建', 'git管理->git本地服务（新建库）');
 INSERT INTO `d_submit` VALUES ('14', '113', '部署配置', '部署管理->部署配置（查看）');
 INSERT INTO `d_submit` VALUES ('15', '114', '部署配置', '部署管理->部署配置（修改）');
+INSERT INTO `d_submit` VALUES ('16', '115', '部署配置提交', '部署管理->部署配置（添加）');
 
 -- ----------------------------
 -- Table structure for `d_user`

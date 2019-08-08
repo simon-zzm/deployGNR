@@ -86,7 +86,8 @@ class deployConfigHandler(tornado.web.RequestHandler):
 class addDeployConfigHandler(tornado.web.RequestHandler):
     @htmlBaseInfo
     @auth
-    #@checkUrl
+    @checkUrl
+    @checkSubmitAuth(115)
     def post(self):
         print("start")
         try:
@@ -98,5 +99,10 @@ class addDeployConfigHandler(tornado.web.RequestHandler):
             gitConf = self.get_argument('gitConfUrl')
             exc = self.get_argument('exc')
         except:
-            pass
-
+            self.render("error.html", baseInfo = self.baseInfo, \
+                                   err = {'text':'参数异常。'})
+            return
+        _ = wdbAddDeployProjectInfo(deployProName, ipPort, user, passwd, gitSrc, gitConf, exc)
+        self.render("error.html", baseInfo = self.baseInfo, \
+                                   err = {'text':'录入完成。'})
+        return
