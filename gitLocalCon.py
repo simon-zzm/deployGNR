@@ -116,14 +116,14 @@ def createGitConf():
     import os
     from shutil import copy2,move
     # 备份
-    try:
-        backFile = '%sgitosis.%s' % (gitRootPath, getNowUnixTimeInt())
-        copy2('%sgitosis.conf' % gitRootPath, backFile)
-        os.chown(backFile, int(gitSYSAuth.split('.')[0]), int(gitSYSAuth.split('.')[1]))
-        status = "%s。备份完成。" % status
-    except:
-        status = "%s。备份原始文件失败。" % status
-        return status
+    #try:
+    #    backFile = '%sgitosis.%s' % (gitRootPath, getNowUnixTimeInt())
+    #    copy2('%sgitosis.conf' % gitRootPath, backFile)
+    #    os.chown(backFile, int(gitSYSAuth.split('.')[0]), int(gitSYSAuth.split('.')[1]))
+    #    status = "%s。备份完成。" % status
+    #except:
+    #    status = "%s。备份原始文件失败。" % status
+    #    return status
     # 复制
     try:
         move('gitosis.tmp', '%sgitosis.conf' % gitRootPath)
@@ -194,18 +194,28 @@ def createLocalGit(gitProjectName):
         return status
     # 添加远程提交 
     try:
+        print("00000")
         import pexpect
         child = pexpect.spawn("""git remote add origin %s:%s""" % (gitManName, gitProjectName))
+        print(child.readlines())
         if len(child.readlines()) == 0:
             pass
-        else: 
-            ret = child.expect(['fatal: remote origin already exists','connecting (yes/no)', pexpect.EOF])
+        else:
+            print("AAAA")
+            ret = child.expect(['fatal: remote origin already exists','connecting (yes/no)', \
+                                'error: failed to push some refs to', pexpect.EOF])
+            print(ret)
             if ret == 0:
+                print("BBB")
                 status = "%s库中已存在该项目。" % status
                 return status
             if ret == 1:
                 child.sendline('yes')
             if ret == 2:
+                print("cccc")
+                status = "%s库中已存在该项目99。" % status
+                return status
+            if ret == 3:
                 status += "异常%s" % child.readlines()[0] 
                 return status
         status = "%s远程添加成功。" % status

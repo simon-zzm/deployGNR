@@ -22,7 +22,7 @@ class deployConfigHandler(tornado.web.RequestHandler):
         optionData = '<option value="u">部署项目名</option>\n'
         allDeployProject = rdbAlldeployProject()
         for one in allDeployProject:
-            optionData = '%s<option value="%s">%s</option>\n' % (optionData, one['id'], one['gitProjectName'])
+            optionData = '%s<option value="%s">%s</option>\n' % (optionData, one['id'], one['deployName'])
         self.render("deployConfig.html", baseInfo = self.baseInfo, \
                                          allDeployProject = allDeployProject, \
                                          optionData = optionData)
@@ -89,7 +89,6 @@ class addDeployConfigHandler(tornado.web.RequestHandler):
     @checkUrl
     @checkSubmitAuth(115)
     def post(self):
-        print("start")
         try:
             deployProName = self.get_argument('deployProjectName')
             ipPort = self.get_argument('ipPort')

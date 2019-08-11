@@ -472,3 +472,34 @@ def wdbAddDeployProjectInfo(deployProName, ipPort, user, passwd, gitSrc, gitConf
     except:
         data = {}
     return data
+
+#### 部署管理->部署权限
+def rdbGroupHaveProject(getProjectId):
+    try:
+        sql = "select deploy_group_id from d_deploy_project_group where deploy_project_id=%s" % (getProjectId)
+        data = sqlcomm(sql)
+    except:
+        data = {}
+    return data
+
+#### 部署管理->部署权限
+def wdbDelProjectGroup(projectId):
+    try:
+        sql = "delete from d_deploy_project_group where deploy_project_id = %s" % (projectId)
+        print(sql)
+        data = sqlcomm(sql)
+    except:
+        data = 0
+    return data
+
+
+#### 部署管理->部署权限
+def wdbProjectGroup(projectId, oneGuid):
+    try:
+        sql = "INSERT d_deploy_project_group(deploy_project_id, deploy_group_id) \
+                  value('%s', '%s')" % (projectId, oneGuid)
+        print(sql)
+        data = sqlcomm(sql)
+    except:
+        data = 0
+    return data
