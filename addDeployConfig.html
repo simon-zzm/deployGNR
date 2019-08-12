@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+
+{% block body_page %}
+
+<form class="form-horizontal" role="form" action="/index/addDeployProject/" method="post" >
+  {% module xsrf_form_html() %}
+  <!-- -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#rsync" aria-controls="rysnc" role="tab" data-toggle="tab">rsync</a></li>
+        <li role="presentation" ><a href="#ansible" aria-controls="ansible" role="tab" data-toggle="tab">ansible</a></li>
+    </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="rsync">
+        <div class="form-group">
+           <div class="row">
+               <input class="form-control" type="hidden" name="type" id="type" value="rsyncDeployProject" >
+               <label class="col-sm-2 control-label" for="lable1" style="text-align:left;">部署项目名</label>
+               <div class="col-sm-2">
+                   <input class="form-control" type="text" name="deployProjectName" id="deployProjectName" value="{% raw deployProName %}" readonly>
+               </div>
+           </div>
+           <hr>
+           <div class="row">
+               <label class="col-sm-2 control-label" for="lable1" style="text-align:left;">服务器地址、端口</label>
+           </div>
+           <div class="row">
+               <div class="col-sm-6">
+                   <input class="form-control" type="text" name="ipPort" id="ipPort" value="{% raw ipPort %}" placeholder="格式 [ip1:port1,ip2:port2]">
+               </div>
+           </div>
+           <hr>
+           <div class="row">
+               <label class="col-sm-2 control-label" for="userName" style="text-align:left;">同步用户名</label>
+               <div class="col-sm-4">
+                   <input class="form-control" type="text" name="userName" id="userName" value="{% raw user %}">
+               </div>
+           </div>
+           <div class="row">
+               <label class="col-sm-2 control-label" for="passwd" style="text-align:left;">同步密码</label>
+               <div class="col-sm-4">
+                   <input class="form-control" type="password" name="passwd" id="passwd" value="{% raw passwd%}">
+               </div>
+           </div>
+           <hr>
+           <div class="row">
+               <label class="col-sm-2 control-label" for="gitSrcUrl" style="text-align:left;">GIT源码地址</label>
+               <div class="col-sm-4">
+                   <input class="form-control" type="text" name="gitSrcUrl" id="gitSrcUrl" value="{% raw gitSrc %}">
+               </div>
+           </div>
+           <hr>
+           <div class="row">
+               <label class="col-sm-2 control-label" for="gitConfUrl" style="text-align:left;">GIT配置地址</label>
+               <div class="col-sm-4">
+                   <input class="form-control" type="text" name="gitConfUrl" id="gitConfUrl" value="{% raw gitConf %}">
+               </div>
+           </div>
+           <div class="row">
+               <div class-"col-sm-12">
+               <label class="col-sm-6 control-label" for="gitConfMark" style="text-align:left;">GIT如何有账号密码。
+                     格式为: git clone http://userName:password@链接</label>
+               </div>
+               <div class="col-sm-12">
+                   <hr>
+               </div>
+           </div>
+           <div class="row">
+               <label class="col-sm-3 control-label" for="exc" style="text-align:left;">不同步内容(使用竖线分隔)</label>
+           </div>
+           <div class="row">
+               <div class="col-sm-6">
+                   <input class="form-control" type="text" name="exc" id="exc" value="{% raw exc %}" placeholder="123.txt|test/|.git">
+               </div>
+           </div>
+           <div class="row">
+               <button type="submit" class="btn btn-default">提交</button>
+           </div>
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="ansible">暂无</div>
+  </div>
+</form>
+
+{% end %}

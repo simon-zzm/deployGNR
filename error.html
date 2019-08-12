@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+
+{% block body_page %}
+    <span style="font-size:25px;"><script type="text/javascript">     
+    <!--     
+    function go(t,url){     
+    //t设置跳转时间：秒     
+    //url设置跳转网址    
+        document.write("<div id=text >提示:<a style='color:red'>{{ err['text'] }}</a></div>");     
+        document.write("<div id=text>本页将在<strong id='tt'></strong>秒后，跳转至首页。<span id='link'></span></div>");     
+        $(t,url);     
+    }     
+        
+    function $(t,url){     
+    ta = t-1;  
+    tb = t + "000";     
+    d = document.getElementById("tt");     
+    d.innerHTML=t;     
+        
+    window.setInterval(function()     
+        {     
+            go_to(url);     
+        },1000);     
+    }  
+    function go_to(url){     
+    d.innerHTML=ta--;     
+    if(ta<0){     
+    document.write("正在跳转至：<a href="+url+">"+url+"</a>");     
+    location.href=url;     
+    }     
+    else{     
+    return;     
+    }     
+    }     
+    //-->     
+    </script>    
+      
+        <script type="text/javascript">  
+        go(6, "/index/")     
+    </script> </span>  
+{% end %}
