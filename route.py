@@ -12,7 +12,7 @@ from gitAuthMan import *
 from gitLocalCon import *
 from deployConfig import *
 from deployAuthMan import *
-
+from deployOnline import *
 
 application = tornado.web.Application([
     (r"/", LoginHandler),              #login.py
@@ -34,6 +34,7 @@ application = tornado.web.Application([
     (r"/index/addDeployProject/", addDeployConfigHandler),         #deployConfig.py
     (r"/index/deployAuth/", projectAuthManHandler),         #deployAuthMan.py
     (r"/index/getproingroup/", projectHaveGroupAllUserHandler),         #deployAuthMan.py
+    (r"/index/deployOnline/", deployOnlineHandler),         #deployOnline.py
     (r"/images/(.*)", tornado.web.StaticFileHandler, {"path":imgRootPath},),
     (r".*", BaseErrorHandler),         #modules.py
 ], **settings)
