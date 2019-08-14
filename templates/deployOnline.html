@@ -10,8 +10,10 @@
          <div class="row">
            <label class="col-sm-2 control-label" for="project">选择项目</label>
            <div class="col-sm-4">
-               <select name="selectprogram">
-                   <option value="xx" >xx</option>
+               <select name="selectprogramid">
+                   {% for one in onlineInfo %}
+                   <option value="{{one['id']}}" >{{one['deployName']}}</option>
+                   {% end %}
                </select>
            </div>
          </div>

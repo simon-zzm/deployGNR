@@ -18,6 +18,9 @@ programPath = "%s/" % os.getcwd()
 # 图片存储路径(不建议与项目放到一个目录里)
 imgRootPath = "/program/img/"
 
+# 日志保存路径
+logsRootPath = "/home/git/deployGNR/deployGNR/logs/"
+
 # 调试模式为True。代码错误会打印到浏览器上，代码修改后立即生效
 # 运行模式为False。执行速度快，但是代码修改后需要重启服务。
 debugMode = True

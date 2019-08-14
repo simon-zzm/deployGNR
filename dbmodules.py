@@ -30,6 +30,14 @@ left join d_column as xc2 on xc1.parent_id=xc2.id ' % userId
     data = sqlcomm(sql)
     return data
 
+#### 用户名查用户ID
+def rdbNameToId(userName):
+    try:
+        sql = "select id from d_user where name='%s'" % userName
+        data = sqlcomm(sql)[0]
+    except:
+        data = {}
+    return data
 
 #### 系统管理->用户信息 userSelf.py
 def rdbUserSelf(userName):
@@ -486,7 +494,6 @@ def rdbGroupHaveProject(getProjectId):
 def wdbDelProjectGroup(projectId):
     try:
         sql = "delete from d_deploy_project_group where deploy_project_id = %s" % (projectId)
-        print(sql)
         data = sqlcomm(sql)
     except:
         data = 0
@@ -498,8 +505,39 @@ def wdbProjectGroup(projectId, oneGuid):
     try:
         sql = "INSERT d_deploy_project_group(deploy_project_id, deploy_group_id) \
                   value('%s', '%s')" % (projectId, oneGuid)
-        print(sql)
         data = sqlcomm(sql)
     except:
         data = 0
+    return data
+
+#### 部署管理->部署上线 deployOnline.py
+def wdbOnlineProject():
+    try:
+        sql = "select id,deployName from d_deploy_project"
+        data = sqlcomm(sql)
+    except:
+        data = 0
+    return data
+
+#### 部署管理->部署上线 deployOnline.py
+def wdbProjectOnlineInfo(projectId):
+    try:
+        sql = """SELECT
+	deployName,
+	deployRsyncScheme,
+	deployRsyncIP,
+	deployRsyncPasswd,
+	deployRsyncKey,
+	deployRsyncExclude,
+	deployGitSrcUrl,
+	deployGitConfUrl,
+	deployRsyncForntComm,
+	deployRsyncBackComm
+FROM
+	d_deploy_project
+WHERE
+	id = '%s'""" % projectId
+        data = sqlcomm(sql)
+    except:
+        data = ()
     return data
