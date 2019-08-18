@@ -36,7 +36,7 @@ def rdbNameToId(userName):
         sql = "select id from d_user where name='%s'" % userName
         data = sqlcomm(sql)[0]
     except:
-        data = {}
+        data = ()
     return data
 
 #### 系统管理->用户信息 userSelf.py

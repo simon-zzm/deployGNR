@@ -65,15 +65,21 @@ def deploy_run(userName, projectId, gitId, gitBranchName):
         log_file.write("%s %s %s %s\n" % (nowTime, userName, program_name, gitId))
     # 数据库中记录日志
     userId = rdbNameToId(userName)
-    return 
-    get = mysql('insert into history(program_id, str_time, user_id, user_name, git_id, git_banrch) values("%s", "%s", %s, "%s", "%s", "%s")' % \
-                     (program_id, now_date, user_id, user_name, git_id, branch_name), 'w')
+    print('insert into d_deploy_history(projectId, strTime, userName, gitSrcId, gitBanrch) values("%s", "%s", "%s", "%s", "%s")' % \
+                     (projectId, now_date, userName, gitId, gitBranchName))
+    get = sqlcomm('insert into d_deploy_history(projectId, strTime, userName, gitSrcId, gitBanrch) values("%s", "%s", "%s", "%s", "%s")' % \
+                     (projectId, now_date, userName, gitId, gitBranchName))
     # 获得项目记录
-    one_program_info = mysql('select * from program where id ="%s"' % program_id, 'r')[0]
-    git_name = one_program_info[2]
-    work_env = one_program_info[3]
-    config_env = one_program_info[4]
+    print('select * from d_deploy_project where id ="%s"' % projectId)
+    one_program_info = sqlcomm('select * from d_deploy_project where id ="%s"' % projectId)[0]
+    print(one_program_info)
+    git_name = one_program_info['deployName']
+    work_env = one_program_info['']
+    config_env = one_program_info['']
     rsync_info = one_program_info[5]
+    print('python dispatch.py "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % \
+                                 (git_name, program_name, work_env, config_env, rsync_info, git_id, get_log_file, branch_name))
+    return 
     try:
         _status = os.system('python dispatch.py "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % \
                                  (git_name, program_name, work_env, config_env, rsync_info, git_id, get_log_file, branch_name)) >> 8
