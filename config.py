@@ -13,13 +13,16 @@ domainName = 'http://182.92.186.219:9988'
 title = 'deployGNR'
 
 # 当前路径
-programPath = "%s/" % os.getcwd()
+programPath = "/home/git/deployGNR/deployGNR/"
 
 # 图片存储路径(不建议与项目放到一个目录里)
 imgRootPath = "/program/img/"
 
 # 日志保存路径
 logsRootPath = "/home/git/deployGNR/deployGNR/logs/"
+
+# 工作目录后缀
+work_env = "work"
 
 # 调试模式为True。代码错误会打印到浏览器上，代码修改后立即生效
 # 运行模式为False。执行速度快，但是代码修改后需要重启服务。

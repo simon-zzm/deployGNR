@@ -10,6 +10,7 @@ import tornado.web
 from config import *
 from modules import *
 from dbmodules import *
+from deployTask import *
 
 
 class deployOnlineHandler(tornado.web.RequestHandler):
@@ -70,21 +71,15 @@ def deploy_run(userName, projectId, gitId, gitBranchName):
     get = sqlcomm('insert into d_deploy_history(projectId, strTime, userName, gitSrcId, gitBanrch) values("%s", "%s", "%s", "%s", "%s")' % \
                      (projectId, now_date, userName, gitId, gitBranchName))
     # 获得项目记录
-    print('select * from d_deploy_project where id ="%s"' % projectId)
     one_program_info = sqlcomm('select * from d_deploy_project where id ="%s"' % projectId)[0]
+    one_program_info['gitBranchName'] = gitBranchName
+    one_program_info['gitShaId'] = gitId
     print(one_program_info)
-    git_name = one_program_info['deployName']
-    work_env = one_program_info['']
-    config_env = one_program_info['']
-    rsync_info = one_program_info[5]
-    print('python dispatch.py "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % \
-                                 (git_name, program_name, work_env, config_env, rsync_info, git_id, get_log_file, branch_name))
+    #try:
+    run(one_program_info, log_file)
+    #except:
+    #    _status = 1
     return 
-    try:
-        _status = os.system('python dispatch.py "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % \
-                                 (git_name, program_name, work_env, config_env, rsync_info, git_id, get_log_file, branch_name)) >> 8
-    except:
-        _status = 1
     # 在日志里记录部署状态
     try:
             log_file = open('%s.log' % get_log_file, "rb").readlines()

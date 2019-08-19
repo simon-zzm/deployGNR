@@ -11,6 +11,9 @@
 import os
 import sys
 import time
+from optparse import OptionParser
+
+ssh_newkey = "Are you sure you want to continue connecting"
 
 def now_time():
     from time import strftime
@@ -19,17 +22,21 @@ def now_time():
 # 创建新项目命令
 def clone_git(argvs):
     import pexpect
-    _line = "/usr/bin/git clone git@%s:%s %s" % \
-            (argvs.HOST, argvs.PROGRAM, argvs.PATH)
+    _line = "/usr/bin/git clone %s %s" % \
+            (argvs.HOST, argvs.PATH)
+    print(_line)
     # 开始连接
     try:
         p = pexpect.spawn('%s' % _line)
+        if  p.expect([ssh_newkey]) == 0:
+            p.sendline("yes")
         frist_step = p.expect(['Enter passphrase',
                                pexpect.EOF,
                                pexpect.TIMEOUT,
                                'delta 0'], timeout=120)
     except:
         return "error.连接git库失败%s" % _line
+    print(frist_step)
     # 判断是否需要输入密码
     if frist_step == 0:
         try:
@@ -129,7 +136,6 @@ def switch_branch(argvs):
         os.chdir("%s" % argvs.PATH)
     except:
         return "error.切换分支过程，切换到git目录错误%s" % argvs.PATH
-    from string import strip
     _line = "cd %s;/usr/bin/git branch" % \
                (argvs.PATH)
     try:
@@ -139,7 +145,7 @@ def switch_branch(argvs):
     getStatus = "error"
     for one in p.split('\n'):
         if one.find("*") > -1 and \
-           strip(one).split(' ')[1] == "%s" % (argvs.BRANCH):
+           str.strip(one).split(' ')[1] == "%s" % (argvs.BRANCH):
                getStatus = "ok"
     #如果不在分支则切换
     if getStatus == "error":
@@ -179,9 +185,8 @@ def check_shaid(argvs):
 
 
 def main():
-    from optparse import OptionParser
-    usage = "python dogit.py [-H] [-p] [-P] [-g] [-h] [-i] [-b]\
-python dogit.py -Hx.x.x.x -pxxxx -P/home/git/deployData/app -g app -i git_id -b branch"
+    usage = """python dogit.py [-H] [-p] [-P] [-g] [-h] [-i] [-b] \
+python dogit.py -Hx.x.x.x -pxxxx -P/home/git/deployData/app -g app -i git_id -b branch"""
     parser = OptionParser(usage=usage)
     parser.add_option('-H', '--HOST',
                       help='git server is ip.',
@@ -206,8 +211,7 @@ python dogit.py -Hx.x.x.x -pxxxx -P/home/git/deployData/app -g app -i git_id -b 
                       default="master",
                       help='the program branch name',
                       action='store', dest='BRANCH')
-    opts, args = parser.parse_args()
-
+    (opts, args) = parser.parse_args()
     if len(sys.argv) == 1:
         print('python dogit.py -h')
     elif type(opts.HOST) == type(None):
@@ -226,8 +230,7 @@ python dogit.py -Hx.x.x.x -pxxxx -P/home/git/deployData/app -g app -i git_id -b 
                 print(get_v.split('.')[1])
                 sys.exit()
         # 如果branch name为空则切git master，不为空则切branch目录
-        from string import strip
-        if len(strip(opts.BRANCH)) == 0:
+        if len(str.strip(opts.BRANCH)) == 0:
             opts.BRANCH = 'master'
         # 切换分支或主干
         get_v = switch_branch(opts)
