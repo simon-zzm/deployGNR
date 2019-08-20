@@ -17,9 +17,9 @@ def now_time():
 
 # rsync src
 def rsync(argvs):
-    _line = "rsync -avz --delete --exclude '/README.TXT' --exclude '.git/' %s \
-            %s rsync://%s:%s/%s" % \
-            (argvs.EXC, argvs.PATH, argvs.HOST, argvs.PORT, argvs.PROGRAM)
+    _line = "rsync -avz --delete --exclude '/README.TXT' --exclude '.git/' --exclude '%s' %s %s@%s:%s:%s " % \
+            (argvs.EXC, argvs.lPATH, argvs.USER, argvs.HOST, argvs.PORT, argvs.rPATH)
+    print(_line)
     # 开始连接
     try:
         p = os.popen("%s" % _line).read()
@@ -44,18 +44,20 @@ python dorsync.py  -H x.x.x.x -d 1978 -P /home/git/deployData/app -e 'data/|log/
                       default = "1979",
                       help='get rsync server port',
                       action='store', dest='PORT')
+    parser.add_option('-u', '--USER',
+                      default = "",
+                      help='server user name',
+                      action='store', dest='USER')
     parser.add_option('-p', '--PASSWD',
                       default = "",
                       help='get rsync sshkey password',
                       action='store', dest='PASSWD')
-    parser.add_option('-P', '--PATH',
-                      #default="NUll",
+    parser.add_option('-L', '--lPATH',
                       help='the program save local path',
-                      action='store', dest='PATH')
-    parser.add_option('-g', '--PROGRAM',
-                      #default="NUll",
-                      help='the program name',
-                      action='store', dest='PROGRAM')
+                      action='store', dest='lPATH')
+    parser.add_option('-R', '--rPATH',
+                      help='the program save remote path',
+                      action='store', dest='rPATH')
     parser.add_option('-e', '--EXCLUDE',
                       default="",
                       help='the program exclude file or dir',
@@ -66,10 +68,10 @@ python dorsync.py  -H x.x.x.x -d 1978 -P /home/git/deployData/app -e 'data/|log/
         print('python dorsync.py -h')
     elif type(opts.HOST) == type(None):
         print("must have rsync server IP.")
-    elif type(opts.PROGRAM) == type(None):
-        print('must have program name')
-    elif type(opts.PATH) == type(None):
-        print('must have save local path')
+    elif type(opts.lPATH) == type(None):
+        print('must have remote path')
+    elif type(opts.rPATH) == type(None):
+        print('must have local path')
     else:
         # 如果有需要需要过滤的则进行拼写语句
         exc_line = ""
@@ -79,7 +81,7 @@ python dorsync.py  -H x.x.x.x -d 1978 -P /home/git/deployData/app -e 'data/|log/
             opts.EXC = exc_line
         # 不存在则报错
         from os import path
-        if path.isdir(opts.PATH):
+        if path.isdir(opts.lPATH):
             get_v = rsync(opts)
             if get_v.split('.')[0] == 'error':
                     print(get_v.split('.')[1])
