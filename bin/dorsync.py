@@ -10,23 +10,35 @@
 # -------------------------------------------------
 import os
 import sys
+import pexpect
 
 def now_time():
     from time import strftime
     return strftime('%Y-%m-%d %H:%M:%S')
 
 # rsync src
-def rsync(argvs):
-    _line = "rsync -avz --delete --exclude '/README.TXT' --exclude '.git/' --exclude '%s' %s %s@%s:%s:%s " % \
-            (argvs.EXC, argvs.lPATH, argvs.USER, argvs.HOST, argvs.PORT, argvs.rPATH)
-    print(_line)
+def gorsync(argvs):
+    _line = "rsync -avz --delete --exclude 'README.TXT' %s %s %s@%s:%s " % \
+            (argvs.EXC, argvs.lPATH, argvs.USER, argvs.HOST, argvs.rPATH)
+    frist_step, two_step = 99, 99
     # 开始连接
     try:
-        p = os.popen("%s" % _line).read()
+        p = pexpect.spawn(_line)
+        frist_step = p.expect(['password:',
+                               pexpect.EOF,
+                               pexpect.TIMEOUT,'total size', 'done'], timeout=10)
     except:
-        return "error.rsync 命令 %s。异常错误信息:%s。" % (_line, p)
+         return "error.rsync 命令 %s。异常错误信息:%s。" % (_line, p)
+    # 判断是否需要输入密码
+    if frist_step == 0:
+        try:
+            p.sendline("%s" % argvs.PASSWD)
+            two_step = p.expect([pexpect.EOF,
+                                 pexpect.TIMEOUT, 'total size'], timeout=600)
+        except:
+            return "error.clone 连接后输入密码异常。请检查连接git服务器。"
     # 判断是否成功
-    if len(p) > 0 and p.find("total size") > 0:
+    if two_step > 0 or frist_step == 3 or two_step == 2:
         return "ok.rsync"
     else:
         return "error.rsync 命令 %s。出错错误信息:%s。" % (_line, p)
@@ -82,7 +94,7 @@ python dorsync.py  -H x.x.x.x -d 1978 -P /home/git/deployData/app -e 'data/|log/
         # 不存在则报错
         from os import path
         if path.isdir(opts.lPATH):
-            get_v = rsync(opts)
+            get_v = gorsync(opts)
             if get_v.split('.')[0] == 'error':
                     print(get_v.split('.')[1])
                     sys.exit()

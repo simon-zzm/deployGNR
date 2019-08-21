@@ -24,7 +24,6 @@ def clone_git(argvs):
     import pexpect
     _line = "/usr/bin/git clone %s %s" % \
             (argvs.HOST, argvs.PATH)
-    print(_line)
     # 开始连接
     try:
         p = pexpect.spawn('%s' % _line)
@@ -36,7 +35,6 @@ def clone_git(argvs):
                                'delta 0'], timeout=120)
     except:
         return "error.连接git库失败%s" % _line
-    print(frist_step)
     # 判断是否需要输入密码
     if frist_step == 0:
         try:

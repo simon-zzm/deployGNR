@@ -44,7 +44,7 @@ class deployOnlineHandler(tornado.web.RequestHandler):
             return
         # 开始执行脚本
         log_context = deploy_run(self.baseInfo['username'], projectId, gitId, gitBranchName)
-        #self.render("index.html",  baseInfo = self.baseInfo)
+        self.render("index.html",  baseInfo = self.baseInfo)
 
 
 # 自动执行部署脚本
@@ -64,38 +64,36 @@ def deploy_run(userName, projectId, gitId, gitBranchName):
         log_file.write("%s %s %s %s %s\n" % (nowTime, userName, program_name, gitBranchName, gitId))
     else:
         log_file.write("%s %s %s %s\n" % (nowTime, userName, program_name, gitId))
+    log_file.close()
     # 数据库中记录日志
     userId = rdbNameToId(userName)
-    print('insert into d_deploy_history(projectId, strTime, userName, gitSrcId, gitBanrch) values("%s", "%s", "%s", "%s", "%s")' % \
-                     (projectId, now_date, userName, gitId, gitBranchName))
     get = sqlcomm('insert into d_deploy_history(projectId, strTime, userName, gitSrcId, gitBanrch) values("%s", "%s", "%s", "%s", "%s")' % \
                      (projectId, now_date, userName, gitId, gitBranchName))
     # 获得项目记录
     one_program_info = sqlcomm('select * from d_deploy_project where id ="%s"' % projectId)[0]
     one_program_info['gitBranchName'] = gitBranchName
     one_program_info['gitShaId'] = gitId
-    print(one_program_info)
-    #try:
-    run(one_program_info, log_file)
-    #except:
-    #    _status = 1
-    return 
+    try:
+        run(one_program_info, "%s.log" % get_log_file)
+    except:
+        _status = 1
     # 在日志里记录部署状态
     try:
-            log_file = open('%s.log' % get_log_file, "rb").readlines()
+            log_file = open('%s.log' % get_log_file, "r").read()
             if log_file[-1].find("上线完成") > 0 :
                 _deploy_status = "OK"
             else:
                 _deploy_status = "Error"
             sql = 'update history set deploy_status="%s" where str_time="%s" and user_name="%s" and program_id="%s"' % (_deploy_status, now_date, user_name, program_id)
             _get_status = mysql("%s" % sql, "w")
+            log_file.close()
     except:
             pass
     # 打开日志
     if _status == 0:
-            log_context = open("%s.log" % get_log_file, "rb").read()
+            log_context = open("%s.log" % get_log_file, "r").read()
     elif _status == 1:
-            log_context = open("%s.log" % get_log_file, "rb").read()
+            log_context = open("%s.log" % get_log_file, "r").read()
             #log_context = "执行部署命令失败。%s" % ("python %s.py %s %s %s" % (program_name, git_id, get_log_file, get_user_auth["program"]["%s" % program_name]))
     else:
             log_context = "未知错误,需要人工查找。 %s %s %s" % (program_name, git_id, get_log_file)
