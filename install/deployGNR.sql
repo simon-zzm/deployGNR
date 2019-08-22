@@ -1,18 +1,3 @@
-﻿/*
-Navicat MySQL Data Transfer
-
-Source Server         : 192.168.1.113-root
-Source Server Version : 50623
-Source Host           : 192.168.1.113:3306
-Source Database       : deployGNR
-
-Target Server Type    : MYSQL
-Target Server Version : 50623
-File Encoding         : 65001
-
-Date: 2018-04-01 09:09:39
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for `d_column`
@@ -56,18 +41,18 @@ INSERT INTO `d_column` VALUES ('16', '部署日志', 'deployLog', '1', '2', null
 DROP TABLE IF EXISTS `d_deploy_history`;
 CREATE TABLE `d_deploy_history` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `projectId` int(50) DEFAULT NULL,
+  `projectId` varchar(50) DEFAULT NULL,
   `strTime` varchar(15) DEFAULT NULL,
-  `userId` int(1) DEFAULT NULL,
+  `userName` varchar(10) DEFAULT NULL,
   `gitSrcId` varchar(128) DEFAULT NULL,
-  `gitConfId` varchar(128) DEFAULT 'new' COMMENT 'new为默认使用最新库',
+  `gitConfId` varchar(128) DEFAULT NULL COMMENT 'new为默认使用最新库',
   `gitBanrch` varchar(100) DEFAULT NULL,
   `deployStatus` varchar(10) NOT NULL DEFAULT '' COMMENT '部署结果',
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_gitSrcId` (`gitSrcId`),
   KEY `i_projectId` (`projectId`),
-  KEY `i_userId` (`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  KEY `i_userId` (`userName`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of d_deploy_history
@@ -83,7 +68,7 @@ CREATE TABLE `d_deploy_project` (
   `deployRsyncScheme` int(1) DEFAULT '0' COMMENT '同步方案：0为rsync 工具，1为ansible',
   `deployRsyncIP` varchar(2000) DEFAULT NULL COMMENT '同步工具IP列表。格式为[ip2:port,ip1:port]',
   `deployRsyncUser` varchar(30) DEFAULT NULL COMMENT '同步用户名',
-  `deployRsyncProjectName` varchar(100) DEFAULT NULL COMMENT '同步项目名',
+  `deployRsyncPath` varchar(100) DEFAULT NULL COMMENT '同步目录',
   `deployRsyncPasswd` varchar(100) DEFAULT NULL COMMENT '同步密码',
   `deployRsyncKey` varchar(150) DEFAULT NULL COMMENT '同步key，存储位置和名称',
   `deployRsyncExclude` varchar(500) DEFAULT NULL COMMENT '同步中排除的文件或目录。格式：123.txt|123/|.git',
@@ -92,11 +77,27 @@ CREATE TABLE `d_deploy_project` (
   `deployRsyncForntComm` varchar(100) DEFAULT NULL COMMENT '同步代码前本地执行的脚本（bashshell）。存储为unixtime+6位数字随机序号文件。',
   `deployRsyncBackComm` varchar(100) DEFAULT NULL COMMENT '同步代码后远程执行的脚本（bashshell）存储为unixtime+6位数字随机序号文件。',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of d_deploy_project
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for `d_deploy_project_group`
+-- ----------------------------
+DROP TABLE IF EXISTS `d_deploy_project_group`;
+CREATE TABLE `d_deploy_project_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `deploy_project_id` int(10) DEFAULT NULL,
+  `deploy_group_id` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of d_deploy_project_group
+-- ----------------------------
+
 
 -- ----------------------------
 -- Table structure for `d_git_project`
@@ -108,13 +109,12 @@ CREATE TABLE `d_git_project` (
   `gitUrl` varchar(100) DEFAULT NULL COMMENT '以git开头的连接',
   `gitStatus` int(1) DEFAULT '0' COMMENT 'git库在本状态：0本地未创建，1本地以创建，2本地删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of d_git_project
 -- ----------------------------
-INSERT INTO `d_git_project` VALUES ('1', 'gittest1', '', '0');
-INSERT INTO `d_git_project` VALUES ('2', 'gittest2', '', '0');
+
 
 -- ----------------------------
 -- Table structure for `d_git_project_user`
@@ -126,14 +126,11 @@ CREATE TABLE `d_git_project_user` (
   `gitProjectId` int(13) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_gitUserId_gitProjectId` (`gitUserId`,`gitProjectId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of d_git_project_user
 -- ----------------------------
-INSERT INTO `d_git_project_user` VALUES ('1', '1', '1');
-INSERT INTO `d_git_project_user` VALUES ('2', '2', '1');
-INSERT INTO `d_git_project_user` VALUES ('3', '2', '2');
 
 -- ----------------------------
 -- Table structure for `d_git_user`
@@ -146,13 +143,12 @@ CREATE TABLE `d_git_user` (
   `passwd` varchar(200) DEFAULT NULL,
   `status` int(1) DEFAULT '0' COMMENT '0为使用中，1为 禁用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of d_git_user
 -- ----------------------------
-INSERT INTO `d_git_user` VALUES ('1', 'simon1', 'simon1.pub', null, '0');
-INSERT INTO `d_git_user` VALUES ('2', 'simon2', 'simon2.pub', null, '0');
+
 
 -- ----------------------------
 -- Table structure for `d_group`
@@ -199,10 +195,10 @@ INSERT INTO `d_group_column` VALUES ('8', '1', '8');
 INSERT INTO `d_group_column` VALUES ('10', '1', '10');
 INSERT INTO `d_group_column` VALUES ('11', '1', '11');
 INSERT INTO `d_group_column` VALUES ('12', '1', '12');
-INSERT INTO `d_group_column` VALUES ('19', '1', '13');
-INSERT INTO `d_group_column` VALUES ('25', '1', '14');
-INSERT INTO `d_group_column` VALUES ('26', '1', '15');
-INSERT INTO `d_group_column` VALUES ('27', '1', '16');
+INSERT INTO `d_group_column` VALUES ('13', '1', '13');
+INSERT INTO `d_group_column` VALUES ('14', '1', '14');
+INSERT INTO `d_group_column` VALUES ('15', '1', '15');
+INSERT INTO `d_group_column` VALUES ('16', '1', '16');
 
 -- ----------------------------
 -- Table structure for `d_group_submit`
@@ -214,7 +210,7 @@ CREATE TABLE `d_group_submit` (
   `submit_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `group_column_ation` (`submit_id`,`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 -- Records of d_group_submit
@@ -246,12 +242,12 @@ CREATE TABLE `d_group_user` (
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_group_index` (`user_id`,`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 -- Records of d_group_user
 -- ----------------------------
-INSERT INTO `d_group_user` VALUES ('3', '1', '1');
+INSERT INTO `d_group_user` VALUES ('1', '1', '1');
 
 -- ----------------------------
 -- Table structure for `d_submit`
@@ -264,7 +260,7 @@ CREATE TABLE `d_submit` (
   `submit_local` varchar(50) DEFAULT NULL COMMENT '权限位置',
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_submit_id` (`submit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COMMENT='单个提交功能列表';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COMMENT='单个提交功能列表';
 
 -- ----------------------------
 -- Records of d_submit
@@ -304,4 +300,5 @@ CREATE TABLE `d_user` (
 -- ----------------------------
 -- Records of d_user
 -- ----------------------------
-INSERT INTO `d_user` VALUES ('1', 'admin', 'admin', 'pbkdf2:sha256:150000$ySHb4MxP$27f5f2fecd3bcd0121d95061689eff5036611d36f8aa3f96936d71c2f957bb58', '', '123');
+INSERT INTO `d_user` VALUES ('1', 'admin', 'admin', 'pbkdf2:sha256:150000$oBLJRYF8$13486792c022b1d6dbc6aca9c009ec41c1034b6df56afcdd884792fc2c7a35bf', '', '123');
+
